@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/linearLayout" >
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/coupon_detail"
+            style="?android:attr/textAppearanceLarge"
+            android:layout_width="262dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textIsSelectable="true"
+            tools:context="de.akvilonsoft.luxuryapp.CouponDetailFragment"
+            android:minHeight="100dp" />
+
+
+
+
+</LinearLayout>
