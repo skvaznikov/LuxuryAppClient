@@ -10,6 +10,17 @@ public class Coupon {
     private Integer id;
     private String name;
     private String beschreibung;
+    private String additional;
+
+    public String getAdditional() {
+        return additional;
+    }
+
+    public void setAdditional(String additional) {
+        this.additional = additional;
+    }
+
+
 
     public Coupon() {
         super();
@@ -21,11 +32,12 @@ public class Coupon {
         this.beschreibung = beschreibung;
     }
 
-    public Coupon(Integer id,String name, String beschreibung) {
+    public Coupon(Integer id,String name, String beschreibung, String add) {
         super();
         this.id = id;
         this.name = name;
         this.beschreibung = beschreibung;
+        this.additional = add;
     }
 
     public Integer getId() {

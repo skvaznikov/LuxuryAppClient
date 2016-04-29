@@ -16,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -100,8 +103,9 @@ public class CouponListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
 
               holder.mItem = mVal.get(position);
-              holder.mIdView.setText(mVal.get(position).getId().toString());
-              holder.mContentView.setText(mVal.get(position).getBeschreibung());
+             // holder.mIdView.setText(mVal.get(position).getId().toString());
+          //  mVal.get(position).getName() + "  " +
+              holder.mContentView.setText( mVal.get(position).getBeschreibung() + "  " + mVal.get(position).getAdditional());
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,7 +175,7 @@ public class CouponListActivity extends AppCompatActivity {
     }
 
 
-    class RetrieveFeedTask extends AsyncTask<Void, Void, String> {
+    class RetrieveFeedTask extends AsyncTask<Void, Void, List<Coupon>> {
 
         private Exception exception;
 
@@ -180,21 +184,37 @@ public class CouponListActivity extends AppCompatActivity {
             //      responseView.setText("");
         }
 
-        protected String doInBackground(Void... urls) {
+        protected List<Coupon> doInBackground(Void... urls) {
             try {
                 URL url = new URL("http://10.0.2.2:8080/LuxuryApp/rest/demo/allCoupons");
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder stringBuilder = new StringBuilder();
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(line).append("\n");
+                    JSONArray jArray = new JSONArray(bufferedReader.readLine());
+                    int i;
+                    for(i=0; i < jArray.length(); i++) {
+
+                        JSONObject jObject = jArray.getJSONObject(i);
+
+                        String name = jObject.getString("name");
+                        String desc = jObject.getString("description");
+                        String add = jObject.getString("additional");
+                        coupons.add(new Coupon(i+1, name, desc, add));
+
                     }
+
+      //              StringBuilder stringBuilder = new StringBuilder();
+      //              String line;
+      //              int id = 1;
+      //              while ((line = bufferedReader.readLine()) != null) {
+      //                  stringBuilder.append(line).append("\n");
+      //                  String name=stringBuilder.toString();
+      //                  coupons.add(new Coupon(id++, name, name));
+      //              }
                     bufferedReader.close();
-                    String name=stringBuilder.toString();
-                    coupons.add(new Coupon(1, name, name));
-                    return stringBuilder.toString();
+
+
+                    return coupons;
                 }
                 finally{
                     urlConnection.disconnect();
