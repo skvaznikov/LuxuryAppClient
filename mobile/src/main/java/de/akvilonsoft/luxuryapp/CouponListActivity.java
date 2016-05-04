@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -163,77 +165,40 @@ public class CouponListActivity extends AppCompatActivity {
 
     private List<Coupon> loadData() {
 
-     //   DatabaseHandler db = new DatabaseHandler(this);
-     //   Coupon coupon = db.getCoupon(2);
-     //   coupons = db.getAllCoupons();
-     //   ListIterator<Coupon> iter = coupons.listIterator();
-     //   while (iter.hasNext()) {
-     //       names.add(iter.next().getBeschreibung());
-     //   }
-        new RetrieveFeedTask().execute();
+        //   DatabaseHandler db = new DatabaseHandler(this);
+        //   Coupon coupon = db.getCoupon(2);
+        //   coupons = db.getAllCoupons();
+        //   ListIterator<Coupon> iter = coupons.listIterator();
+        //   while (iter.hasNext()) {
+        //       names.add(iter.next().getBeschreibung());
+        //   }
+      //  new RetrieveFeedTask().execute();
+      //  int i;
+      //  for(i=0; i < jArray.length(); i++) {
+
+      //      JSONObject jObject = jArray.getJSONObject(i);
+
+       //     String name = jObject.getString("name");
+       //     String desc = jObject.getString("bezeichnung");
+            // String add = jObject.getString("additional");
+            // String loc = jObject.getString("location");
+       //     coupons.add(new Coupon(i+1, name, desc));
+
+       // }
         return coupons;
     }
+    private void searchLocation() {
 
-
-    class RetrieveFeedTask extends AsyncTask<Void, Void, List<Coupon>> {
-
-        private Exception exception;
-
-        protected void onPreExecute() {
-            //      progressBar.setVisibility(View.VISIBLE);
-            //      responseView.setText("");
-        }
-
-        protected List<Coupon> doInBackground(Void... urls) {
-            try {
-                URL url = new URL("http://10.0.2.2:8080/LuxuryApp/rest/demo/allCoupons");
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    JSONArray jArray = new JSONArray(bufferedReader.readLine());
-                    int i;
-                    for(i=0; i < jArray.length(); i++) {
-
-                        JSONObject jObject = jArray.getJSONObject(i);
-
-                        String name = jObject.getString("name");
-                        String desc = jObject.getString("description");
-                        String add = jObject.getString("additional");
-                        coupons.add(new Coupon(i+1, name, desc, add));
-
-                    }
-
-      //              StringBuilder stringBuilder = new StringBuilder();
-      //              String line;
-      //              int id = 1;
-      //              while ((line = bufferedReader.readLine()) != null) {
-      //                  stringBuilder.append(line).append("\n");
-      //                  String name=stringBuilder.toString();
-      //                  coupons.add(new Coupon(id++, name, name));
-      //              }
-                    bufferedReader.close();
-
-
-                    return coupons;
-                }
-                finally{
-                    urlConnection.disconnect();
-                }
-            }
-            catch(Exception e) {
-                Log.e("ERROR", e.getMessage(), e);
-                return null;
-            }
-        }
-
-        protected void onPostExecute(String response) {
-            if(response == null) {
-                response = "THERE WAS AN ERROR";
-            }
-            //       progressBar.setVisibility(View.GONE);
-                 Log.i("INFO", response);
-            //       responseView.setText(response);
-        }
+        //   DatabaseHandler db = new DatabaseHandler(this);
+        //   Coupon coupon = db.getCoupon(2);
+        //   coupons = db.getAllCoupons();
+        //   ListIterator<Coupon> iter = coupons.listIterator();
+        //   while (iter.hasNext()) {
+        //       names.add(iter.next().getBeschreibung());
+        //   }
+      //  new RetrieveFeedTask().execute();
     }
+
+
 
 }

@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CouponListActivity"
+            android:name=".MainActivity"
             android:label="豪华"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,6 +31,11 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="de.akvilonsoft.luxuryapp.CouponListActivity" />
+        </activity>
+        <activity
+            android:name=".CouponListActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 

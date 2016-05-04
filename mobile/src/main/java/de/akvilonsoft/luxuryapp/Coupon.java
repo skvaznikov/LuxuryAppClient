@@ -32,12 +32,12 @@ public class Coupon {
         this.beschreibung = beschreibung;
     }
 
-    public Coupon(Integer id,String name, String beschreibung, String add) {
+    public Coupon(Integer id,String name, String beschreibung) {
         super();
         this.id = id;
         this.name = name;
         this.beschreibung = beschreibung;
-        this.additional = add;
+        //this.additional = add;
     }
 
     public Integer getId() {
