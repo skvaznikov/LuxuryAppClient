@@ -19,15 +19,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * An activity representing a list of Coupons. This activity
@@ -45,9 +50,10 @@ public class CouponListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     List<String> names = new ArrayList<String>();
-    List<Coupon> coupons = new ArrayList<>();
+  //  List<Coupon> coupons = new ArrayList<>();
     private String name;
-
+    public String town = new String();
+    JSONArray jArray = new JSONArray();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +74,12 @@ public class CouponListActivity extends AppCompatActivity {
 
         View recyclerView = findViewById(R.id.coupon_list);
         assert recyclerView != null;
+        Bundle extras = getIntent().getExtras();
+        if(extras !=null)
+        {
+            town = extras.getString("city").toString();
+        }
+
         setupRecyclerView((RecyclerView) recyclerView);
 
         if (findViewById(R.id.coupon_detail_container) != null) {
@@ -77,12 +89,14 @@ public class CouponListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+
   //      saveData();
 
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(loadData()));
+        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(getObjects()));
     }
 
     public class SimpleItemRecyclerViewAdapter
@@ -103,16 +117,19 @@ public class CouponListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-
+            final String  name = mVal.get(position).getName();
+            final String  bez_lang = mVal.get(position).getBeschreibung_lang();
               holder.mItem = mVal.get(position);
              // holder.mIdView.setText(mVal.get(position).getId().toString());
           //  mVal.get(position).getName() + "  " +
-              holder.mContentView.setText( mVal.get(position).getBeschreibung() + "  " + mVal.get(position).getAdditional());
+              holder.mContentView.setText( mVal.get(position).getBeschreibung() + "  " + mVal.get(position).getName());
+            holder.mContentView.setOnClickListener(new View.OnClickListener() {
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if (mTwoPane) {
+
                         Bundle arguments = new Bundle();
                         arguments.putString(CouponDetailFragment.ARG_ITEM_ID, holder.mItem.getId().toString());
                         CouponDetailFragment fragment = new CouponDetailFragment();
@@ -121,10 +138,12 @@ public class CouponListActivity extends AppCompatActivity {
                                 .replace(R.id.coupon_detail_container, fragment)
                                 .commit();
                     } else {
+
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CouponDetailActivity.class);
                         intent.putExtra(CouponDetailFragment.ARG_ITEM_ID, holder.mItem.getId().toString());
-
+                        intent.putExtra(CouponDetailFragment.NAME, name);
+                        intent.putExtra(CouponDetailFragment.BESCHREIBUNG_LANG, bez_lang);
                         context.startActivity(intent);
                     }
                 }
@@ -163,7 +182,7 @@ public class CouponListActivity extends AppCompatActivity {
         db.addCoupon(new Coupon("Luxury 3", "Schuhe"));
     }
 
-    private List<Coupon> loadData() {
+   // private List<Coupon> loadData() {
 
         //   DatabaseHandler db = new DatabaseHandler(this);
         //   Coupon coupon = db.getCoupon(2);
@@ -185,8 +204,8 @@ public class CouponListActivity extends AppCompatActivity {
        //     coupons.add(new Coupon(i+1, name, desc));
 
        // }
-        return coupons;
-    }
+       // return coupons;
+    //}
     private void searchLocation() {
 
         //   DatabaseHandler db = new DatabaseHandler(this);
@@ -198,7 +217,55 @@ public class CouponListActivity extends AppCompatActivity {
         //   }
       //  new RetrieveFeedTask().execute();
     }
+    protected List<Coupon> getObjects() {
+        List<Coupon> coupons = new ArrayList<>();
+        RetrieveFeedTask rft = new RetrieveFeedTask();
 
+        try {
+            if (town.equals("") || town.toString()=="" ){
+                jArray = rft.execute(new URL("http://10.0.2.2:8080/LuxuryApp/rest/demo/allCoupons")).get(5, TimeUnit.SECONDS);
+            } else {
+                jArray = rft.execute(new URL("http://10.0.2.2:8080/LuxuryApp/rest/demo/localeCoupons?city=" + town)).get(5, TimeUnit.SECONDS);
+            }
+
+            //jArray = rft.getjArray();
+            // new RetrieveFeedTask(new RetrieveFeedTask.AsyncResponse() {
+            //     @Override
+            //     public void processFinish(JSONArray output) {
+            //         jArray = output;
+            //     }
+            // }).execute();
+            int i;
+            for (i = 0; i < jArray.length(); i++) {
+
+                JSONObject jObject = null;
+
+                jObject = jArray.getJSONObject(i);
+
+
+                String name = jObject.getString("name");
+                System.out.println(name);
+                String desc = jObject.getString("bezeichnung");
+                String desc_long = jObject.getString("bezeichnung_lang");
+                // String add = jObject.getString("additional");
+                // String loc = jObject.getString("location");
+                coupons.add(new Coupon(i + 1, name, desc, desc_long));
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        return coupons;
+    }
 
 
 }

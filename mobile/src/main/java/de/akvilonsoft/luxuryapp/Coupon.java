@@ -10,6 +10,16 @@ public class Coupon {
     private Integer id;
     private String name;
     private String beschreibung;
+
+    public String getBeschreibung_lang() {
+        return beschreibung_lang;
+    }
+
+    public void setBeschreibung_lang(String beschreibung_lang) {
+        this.beschreibung_lang = beschreibung_lang;
+    }
+
+    private String beschreibung_lang;
     private String additional;
 
     public String getAdditional() {
@@ -32,12 +42,12 @@ public class Coupon {
         this.beschreibung = beschreibung;
     }
 
-    public Coupon(Integer id,String name, String beschreibung) {
+    public Coupon(Integer id,String name, String beschreibung, String beschreibung_lang) {
         super();
         this.id = id;
         this.name = name;
         this.beschreibung = beschreibung;
-        //this.additional = add;
+        this.beschreibung_lang = beschreibung_lang;
     }
 
     public Integer getId() {

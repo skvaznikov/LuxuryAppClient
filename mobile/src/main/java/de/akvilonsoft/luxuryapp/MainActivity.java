@@ -1,5 +1,6 @@
 package de.akvilonsoft.luxuryapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,8 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -29,6 +33,7 @@ import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
 JSONArray jArray = new JSONArray();
+    ArrayAdapter<String> adapter;
     EditText editText = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +56,16 @@ JSONArray jArray = new JSONArray();
             @Override
             public void onClick(View view) {
                 List<Coupon> listCoupons = getObjects();
+                List<String> list = new ArrayList<>();
                 String test = "";
                 for (Coupon coupon: listCoupons) {
-                    test += coupon.getName();
+                    test +=coupon.getBeschreibung();
                 }
 if (listCoupons.size()==0) test = "Keine Coupons gefunden";
-                Toast.makeText(getBaseContext(), test , Toast.LENGTH_LONG).show();
+           //     Toast.makeText(getBaseContext(), test , Toast.LENGTH_LONG).show();
+                Intent myIntent = new Intent(MainActivity.this, CouponListActivity.class);
+                 myIntent.putExtra("city", editText.getText().toString()); //Optional parameters
+                MainActivity.this.startActivity(myIntent);
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -90,9 +99,10 @@ if (listCoupons.size()==0) test = "Keine Coupons gefunden";
 
             String name = jObject.getString("name");
             String desc = jObject.getString("bezeichnung");
+            String desc_long = jObject.getString("bezeichnung_lang");
             // String add = jObject.getString("additional");
             // String loc = jObject.getString("location");
-            coupons.add(new Coupon(i + 1, name, desc));
+            coupons.add(new Coupon(i + 1, name, desc, desc_long));
 
         }
         } catch (JSONException e) {

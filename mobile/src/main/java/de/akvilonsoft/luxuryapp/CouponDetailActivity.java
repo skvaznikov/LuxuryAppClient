@@ -3,6 +3,7 @@ package de.akvilonsoft.luxuryapp;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -21,13 +22,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,6 +45,12 @@ import java.util.Map;
  * in a {@link CouponListActivity}.
  */
 public class CouponDetailActivity extends AppCompatActivity {
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +65,7 @@ public class CouponDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 Snackbar.make(view, "Generate QR", Snackbar.LENGTH_LONG)
-                        .setAction("CreateQR",this).show();
+                        .setAction("CreateQR", this).show();
             }
         });
         final Button but = (Button) findViewById(R.id.button);
@@ -60,7 +73,7 @@ public class CouponDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getBarcode(but);
-  //             Toast.makeText(CouponDetailActivity.this, loadData(), Toast.LENGTH_LONG).show();
+                //             Toast.makeText(CouponDetailActivity.this, loadData(), Toast.LENGTH_LONG).show();
             }
         });
         // Show the Up button in the action bar.
@@ -84,6 +97,10 @@ public class CouponDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(CouponDetailFragment.ARG_ITEM_ID,
                     getIntent().getStringExtra(CouponDetailFragment.ARG_ITEM_ID));
+            arguments.putString(CouponDetailFragment.NAME,
+                    getIntent().getStringExtra(CouponDetailFragment.NAME));
+            arguments.putString(CouponDetailFragment.BESCHREIBUNG_LANG,
+                    getIntent().getStringExtra(CouponDetailFragment.BESCHREIBUNG_LANG));
             CouponDetailFragment fragment = new CouponDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -92,6 +109,9 @@ public class CouponDetailActivity extends AppCompatActivity {
         }
 
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void getBarcode(Button b) {
@@ -114,7 +134,7 @@ public class CouponDetailActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setGravity(Gravity.CENTER_HORIZONTAL);
         tv.setText(barcode_data);
-b.setClickable(false);
+        b.setClickable(false);
     }
 
 
@@ -133,9 +153,10 @@ b.setClickable(false);
         }
         return super.onOptionsItemSelected(item);
     }
+
     /**************************************************************
      * getting from com.google.zxing.client.android.encode.QRCodeEncoder
-     *
+     * <p/>
      * See the sites below
      * http://code.google.com/p/zxing/
      * http://code.google.com/p/zxing/source/browse/trunk/android/src/com/google/zxing/client/android/encode/EncodeActivity.java
@@ -190,4 +211,44 @@ b.setClickable(false);
         return null;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "CouponDetail Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://de.akvilonsoft.luxuryapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "CouponDetail Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://de.akvilonsoft.luxuryapp/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        client.disconnect();
+    }
 }

@@ -9,7 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import de.akvilonsoft.luxuryapp.dummy.DummyContent;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 
 /**
  * A fragment representing a single Coupon detail screen.
@@ -23,6 +35,9 @@ public class CouponDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String NAME = "item_name";
+    public static final String BESCHREIBUNG_LANG = "item_beschreibung_lang";
+    private String beschr = new String();
 
     /**
      * The dummy content this fragment is presenting.
@@ -44,8 +59,9 @@ public class CouponDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-
+            DummyContent dc = new DummyContent();
+            mItem = dc.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
+            beschr=getArguments().getString(BESCHREIBUNG_LANG);
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
@@ -65,5 +81,71 @@ public class CouponDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+
+
+    public class DummyContent {
+
+        /**
+         * An array of sample (dummy) items.
+         */
+        public  final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+
+        /**
+         * A map of sample (dummy) items, by ID.
+         */
+        public  final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+
+        private static final int COUNT = 4;
+
+         {
+            // Add some sample items.
+            for (int i = 1; i <= COUNT; i++) {
+                addItem(createDummyItem(i));
+            }
+        }
+
+        private  void addItem(DummyItem item) {
+            ITEMS.add(item);
+            ITEM_MAP.put(item.id, item);
+        }
+
+        private  DummyItem createDummyItem(int position) {
+            return new DummyItem(String.valueOf(position), getArguments().getString(NAME), getArguments().getString(BESCHREIBUNG_LANG));
+        }
+
+        private  String makeDetails(int position) {
+            /**       StringBuilder builder = new StringBuilder();
+             builder.append("Details about Item: ").append(position);
+             for (int i = 0; i < position; i++) {
+             builder.append("\nMore details information here.");
+             }
+             return builder.toString();
+             */
+            return beschr;
+        }
+
+        /**
+         * A dummy item representing a piece of content.
+         */
+        public  class DummyItem {
+            public final String id;
+            public final String content;
+            public final String details;
+
+            public DummyItem(String id, String content, String details) {
+                this.id = id;
+                this.content = content;
+                this.details = details;
+            }
+
+            @Override
+            public String toString() {
+                return content;
+            }
+        }
+
+
     }
 }
